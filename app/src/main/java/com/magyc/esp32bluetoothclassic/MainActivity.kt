@@ -55,13 +55,12 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val pairedDevices = getBluetoothPairedDevices(bluetoothManager)
-            val silhouetteCameoPlotter = getBluetoothPairedDevice(pairedDevices,
+            val bluetoothPairedDevice = getBluetoothPairedDevice(pairedDevices,
                 Machines.ESP32.machineName)
-            val bluetoothDevice = getBluetoothRemoteDevice(bluetoothManager, silhouetteCameoPlotter)
+            val bluetoothDevice = getBluetoothRemoteDevice(bluetoothManager, bluetoothPairedDevice)
             val bluetoothSocket = getBluetoothSocket(bluetoothDevice)
 
             Esp32BluetoothClassicTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -69,13 +68,13 @@ class MainActivity : ComponentActivity() {
                     Greeting("Android")
                     Column {
                         Button(onClick = { if (bluetoothSocket?.isConnected == true) {
-                            Log.d("Bluetooth", "Socket Connected")
+                            Log.d("Bluetooth", "Sending 1")
                             sendBluetoothData(bluetoothSocket, "1")
                         } }) {
                             Text(text = "ON")
                         }
                         Button(onClick = { if (bluetoothSocket?.isConnected == true) {
-                            Log.d("Bluetooth", "Socket Connected")
+                            Log.d("Bluetooth", "Sending 0")
                             sendBluetoothData(bluetoothSocket, "0")
                         } }) {
                             Text(text = "OFF")
@@ -91,13 +90,6 @@ class MainActivity : ComponentActivity() {
                                     Manifest.permission.BLUETOOTH_CONNECT
                                 ) != PackageManager.PERMISSION_GRANTED
                             ) {
-                                // TODO: Consider calling
-                                //    ActivityCompat#requestPermissions
-                                // here to request the missing permissions, and then overriding
-                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                //                                          int[] grantResults)
-                                // to handle the case where the user grants the permission. See the documentation
-                                // for ActivityCompat#requestPermissions for more details.
                                 return@Thread
                             }
                             bluetoothSocket.connect()
